@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import *
-#from sockets import *
-#from steganography import *
+from sockets import *
+from steganography import *
 __author__ = 'piotrowy'
 
 
