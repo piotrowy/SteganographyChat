@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import skimage as skm
 __author__ = 'piotrowy'
 
 

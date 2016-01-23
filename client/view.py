@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from steganography import *
 from settings import HOST, PORT_S, ROOT, USER, PORT_R
 from tkinter import *
 import socket
@@ -41,7 +40,7 @@ class Chat(Frame):
         self.load_message(txt, ROOT)
         self.clear_entry()
 
-    def load_message(self, message, user, convert=None):
+    def load_message(self, message, user):
         self.chat_log.config(state=NORMAL)
         start = float(self.chat_log.index('end'))-1.0
         self.chat_log.insert(END, user + ': ')

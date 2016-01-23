@@ -27,9 +27,13 @@ def main():
     except socket.error:
         print('[SOCKETS.PY][receive_from_server]: Connection can\'t be established')
 
-    data = sck.recv(4096)
+    data_str = ''
+    data = sck.recv(256)
+    while data.decode('utf-8') != '':
+        data_str += data.decode('utf-8')
+        data = sck.recv(256)
     sck.close()
-    print(data)
+    print(data_str)
 
 
 if __name__ == '__main__':
