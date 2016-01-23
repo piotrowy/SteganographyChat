@@ -34,7 +34,7 @@ def encode_to_sockets(message, user):
                 image[i][j] += data_to_encode[index]
                 index += 1
             break
-
+    return image
 
 
 def decode_from_sockets(socket_string):
