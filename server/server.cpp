@@ -16,7 +16,7 @@
 #include <pthread.h>
 #include <fcntl.h>
 
-#define SERVER_PORT 1500
+#define SERVER_PORT 5000
 #define BUFFER_SIZE 5
 #define QUEUE_SIZE 5
 
@@ -98,7 +98,8 @@ History *history;
 
             for (int i = 0; i < 100; i++) {
                 const void* buffer = history->get_message(i).get_lena().append("\n").c_str();
-                write(pClientSocket, buffer, 2*sizeof(buffer));
+                write(pClientSocket, buffer, history->get_message(i).get_lena().append("\n").length());
+                std::cout<<history->get_message(i).get_lena()<<" "<<history->get_message(i).get_lena().append("\n").length()<<std::endl;
             }
 
             close(pClientSocket);
@@ -154,6 +155,7 @@ int main() {
                 }
            }
            Message* new_lena = new Message(lena);
+           std::cout<<new_lena->get_lena()<<std::endl;
            history->insert_message(*new_lena);
            close(nClientSocket);
     }
