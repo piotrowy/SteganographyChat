@@ -99,7 +99,6 @@ History *history;
             for (int i = 0; i < 100; i++) {
                 const void* buffer = history->get_message(i).get_lena().append("\n").c_str();
                 write(pClientSocket, buffer, history->get_message(i).get_lena().append("\n").length());
-                std::cout<<history->get_message(i).get_lena()<<" "<<history->get_message(i).get_lena().append("\n").length()<<std::endl;
             }
 
             close(pClientSocket);
@@ -155,7 +154,6 @@ int main() {
                 }
            }
            Message* new_lena = new Message(lena);
-           std::cout<<new_lena->get_lena()<<std::endl;
            history->insert_message(*new_lena);
            close(nClientSocket);
     }
