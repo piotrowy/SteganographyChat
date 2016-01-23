@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 from steganography import *
 from settings import HOST, PORT_S, ROOT, USER, PORT_R
 from tkinter import *
@@ -63,7 +65,7 @@ class Chat(Frame):
             print('[send_to_server] message: ' + message)
             sck = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             try:
-                sck.connect((HOST, PORT))
+                sck.connect((HOST, PORT_S))
                 print('[send_to_server]: Connection established.\n')
             except socket.error:
                 print('[send_to_server]: Connection can\'t be established.\n')
@@ -77,11 +79,12 @@ class Chat(Frame):
         if len(server_data) == 4:
             USER = server_data[0]
             HOST = server_data[1]
-            PORT = int(server_data[2])
+            PORT_S = int(server_data[2])
             PORT_R = int(server_data[3])
-            self.show_statement('User: ' + USER + ', Host: ' + HOST + ', Port: ' + str(PORT))
+            self.show_statement('User: ' + USER + ', Host: ' + HOST + ', Port_s: ' + str(PORT_S) + ', Port_r: ' + PORT_R)
         else:
             self.show_statement('Invalid data. \n')
+            self.show_statement('User: ' + USER + ', Host: ' + HOST + ', Port_s: ' + str(PORT_S) + ', Port_r: ' + PORT_R)
         self.clear_entry(self)
 
     @staticmethod

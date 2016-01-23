@@ -25,7 +25,7 @@ def receive_from_server():
 
 
 def main():
-    _thread.start_new_thread(receive_from_server,())
+    #_thread.start_new_thread(receive_from_server,())
     app.mainloop()
 
 
