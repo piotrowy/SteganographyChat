@@ -36,7 +36,7 @@ class Chat(Frame):
         self.chat_entry.bind("<Return>", self.send_to_server)
         self.chat_entry.bind("<KeyRelease-Return>", self.clear_entry)
 
-        self.show_statement('Type to set options [User] [Host] [Port_to_send] [Port_to_receive] and push button \'set\'.\n')
+        self.show_statement('Type to set options [User] [Host] [Port_to_send] [Port_to_receive] and press \'set\'.\n')
 
     def show_statement(self, txt):
         self.load_message(txt, stg.ROOT)
@@ -69,7 +69,10 @@ class Chat(Frame):
 
     def check_command(self, message):
         print('[check_command]: ' + message)
-        return {'/clear': self.clear_chat_log}[message]()
+        try:
+            return {'/clear': self.clear_chat_log}[message]()
+        except KeyError:
+            return 1
 
     def send_to_server(self, event=None):
         message = self.msg_filter(self.chat_entry.get("0.0", END))
