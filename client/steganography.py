@@ -21,17 +21,19 @@ def decode_secret_message(msg):
 
 def encode_to_sockets(message, user):
     message = user + '#' + str(time.clock()) + '#' +  message
-    data_to_encode = [[]]
+    data_to_encode = []
+    index = 0
     image = [[]] #tu trzeba wstawic lenke z biblioteki
     for i in range(len(message)):
         bin_msg = bin(message[i])
-        bin_msg_table = []
         for j in range(len(bin_msg)):
-            bin_msg_table.append(bin_msg[j])
-        data_to_encode[i].append(bin_msg_table)
+            data_to_encode.append(bin_msg[j])
     for i in range(len(lena_image)):
         for j in range(len(lena_image[i])):
-            image[i][j] += data_to_encode[][] #sprytnie powstawiac indeksy
+            if index < len(data_to_encode):
+                image[i][j] += data_to_encode[index]
+                index += 1
+            break
 
 
 
