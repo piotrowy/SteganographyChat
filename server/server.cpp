@@ -11,18 +11,21 @@
 #include <arpa/inet.h>
 #include <time.h>
 #include <ctime>
+#include <string>
+#include <iostream>
 
-#define SERVER_PORT 1234
+#define SERVER_PORT 1500
+#define BUFFER_SIZE 4096
 #define QUEUE_SIZE 5
 
 class Message {
 
     private:
      int timestamp;
-     int** lena;
+     std::string lena;
 
     public:
-     Message(int** input_lena) {
+     Message(std::string input_lena) {
         this->lena = input_lena;
         this->timestamp = std::time(0);
      }
@@ -30,7 +33,7 @@ class Message {
      int get_timestamp() {
         return this->timestamp;
      }
-     int** get_lena() {
+     std::string get_lena() {
         return this->lena;
      }
 };
@@ -66,6 +69,8 @@ int main() {
    socklen_t nTmp;
    struct sockaddr_in stAddr, stClientAddr;
 
+   History *history = new History();
+
 
    /* address structure */
    memset(&stAddr, 0, sizeof(struct sockaddr));
@@ -90,16 +95,21 @@ int main() {
        nClientSocket = accept(nSocket, (struct sockaddr*)&stClientAddr, &nTmp);
 
            printf("[connection from: %s]\n", inet_ntoa((struct in_addr)stClientAddr.sin_addr));
-           time_t now;
-           struct tm *local;
-           time (&now);
-           local = localtime(&now);
-           char buffer[50];
-           int n;
-           n = sprintf(buffer, "%s\n", asctime(local));
-           write(nClientSocket, buffer, n);
+           std::string lena = "";
+           char buffer[BUFFER_SIZE];
+           bool keep_reading = true;
+           while(keep_reading) {
+                int n = read(nClientSocket, buffer, BUFFER_SIZE);
+                lena.append(buffer, n);
+                if (n < BUFFER_SIZE) {
+                    keep_reading = false;
+                }
+           }
+           std::cout<<lena;
+           Message* new_lena = new Message(lena);
+           history->insert_message(*new_lena);
            close(nClientSocket);
-       }
+    }
 
    close(nSocket);
    return(0);
