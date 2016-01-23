@@ -36,13 +36,27 @@ class Chat(tk.Frame):
 
     def send_message(self, event=None):
         self.chat_log.config(state=NORMAL)
-        self.chat_log.insert(END, "YOU: " + self.chat_entry.get("0.0", END))
+        self.chat_log.insert(END, self.msg_filter(self.chat_entry.get("0.0", END)))
         self.chat_log.config(state=DISABLED)
+        self.chat_log.yview(END)
 
     def load_message(self, message, user):
         self.chat_log.config(state=NORMAL)
         self.chat_log.insert(END, user + ": " + message)
         self.chat_log.config(state=DISABLED)
+        self.chat_log.yview(END)
+
+    def msg_filter(self, txt):
+        message = ''
+        for i in range(len(txt)):
+            if txt[len(txt)-1-i] != '\n' and txt[len(txt)-i] == ' ':
+                message = txt[:i]
+                break
+        for i in range(len(message)):
+            if message[i] != '\n' and message[i] != ' ':
+                return message[i:]
+        return ''
+
 
     def connect_server(self):
         pass
