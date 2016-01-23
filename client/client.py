@@ -2,10 +2,11 @@
 # -*- coding: utf-8 -*-
 from view import Chat
 from settings import HOST, PORT_R, USER
+from steganography import *
 import tkinter as tk
 import socket
 import _thread
-from steganography import *
+import time
 import skimage
 __author__ = 'piotrowy'
 
@@ -40,6 +41,7 @@ def receive_from_server():
                 if data_table[i] != data_temp_table[i]:
                     app.load_message(data_temp_table[i] + '\n', USER)
             data_table = data_temp_table
+        time.sleep(0.5)
 
 
 def main():
