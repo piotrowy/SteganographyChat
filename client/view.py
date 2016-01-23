@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from settings import HOST, PORT_S, ROOT, USER, PORT_R
+import settings as stg
 from tkinter import *
 import socket
 __author__ = 'piotrowy'
@@ -36,54 +36,69 @@ class Chat(Frame):
         self.chat_entry.bind("<Return>", self.send_to_server)
         self.chat_entry.bind("<KeyRelease-Return>", self.clear_entry)
 
+        self.show_statement('Type to set options [User] [Host] [Port_to_send] [Port_to_receive] and push button \'set\'.\n')
+
     def show_statement(self, txt):
-        self.load_message(txt, ROOT)
+        self.load_message(txt, stg.ROOT)
         self.clear_entry()
 
     def load_message(self, message, user):
-        self.chat_log.config(state=NORMAL)
-        start = float(self.chat_log.index('end'))-1.0
-        self.chat_log.insert(END, user + ': ')
-        self.chat_log.insert(END, self.msg_filter(message))
-        self.chat_log.tag_add(user + ': ', start, start+float((len(user)+1)/10))
-        if user == USER:
-            self.chat_log.tag_config(user + ': ', foreground='#445599')
-        elif user == ROOT:
-            self.chat_log.tag_config(user + ': ', foreground='#FF4455')
-        else:
-            self.chat_log.tag_config(user + ': ', foreground='#449955')
-        self.chat_log.config(state=DISABLED)
-        self.chat_log.yview(END)
+        if message != '' and message != '\n':
+            self.chat_log.config(state=NORMAL)
+            start = float(self.chat_log.index('end'))-1.0
+            self.chat_log.insert(END, user + ': ')
+            self.chat_log.insert(END, self.msg_filter(message))
+            self.chat_log.tag_add(user + ': ', start, start+float((len(user)+1)/10))
+            if user == stg.USER:
+                self.chat_log.tag_config(user + ': ', foreground='#445599')
+            elif user == stg.ROOT:
+                self.chat_log.tag_config(user + ': ', foreground='#FF4455')
+            else:
+                self.chat_log.tag_config(user + ': ', foreground='#449955')
+            self.chat_log.config(state=DISABLED)
+            self.chat_log.yview(END)
 
     def clear_entry(self, event=None):
         self.chat_entry.delete("0.0", END)
 
+    def clear_chat_log(self):
+        self.chat_log.config(state=NORMAL)
+        self.chat_log.delete("0.0", END)
+        self.chat_log.config(state=DISABLED)
+        return 0
+
+    def check_command(self, message):
+        print('[check_command]: ' + message)
+        return {'/clear': self.clear_chat_log}[message]()
+
     def send_to_server(self, event=None):
         message = self.msg_filter(self.chat_entry.get("0.0", END))
-        if message != '' and message != '\n':
-            print('[send_to_server] message: ' + message)
-            sck = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            try:
-                sck.connect((HOST, PORT_S))
-                print('[send_to_server]: Connection established.\n')
-            except socket.error:
-                print('[send_to_server]: Connection can\'t be established.\n')
-                return
-            sck.send(message.encode('utf-8'))
-            sck.close()
         self.clear_entry()
+        if self.check_command(message[:len(message)-1]) != 0:
+            if message != '' and message != '\n':
+                print('[send_to_server] message: ' + message)
+                sck = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                try:
+                    sck.connect((stg.HOST, stg.PORT_S))
+                    print('[send_to_server]: Connection established.\n')
+                except socket.error:
+                    print('[send_to_server]: Connection can\'t be established.\n')
+                    self.clear_entry()
+                    return
+                sck.send(message.encode('utf-8'))
+                sck.close()
 
     def set_server(self):
         server_data = self.chat_entry.get("0.0", END).split(' ')
         if len(server_data) == 4:
-            USER = server_data[0]
-            HOST = server_data[1]
-            PORT_S = int(server_data[2])
-            PORT_R = int(server_data[3])
-            self.show_statement('User: ' + USER + ', Host: ' + HOST + ', Port_s: ' + str(PORT_S) + ', Port_r: ' + PORT_R)
+            stg.USER = server_data[0]
+            stg.HOST = server_data[1]
+            stg.PORT_S = int(server_data[2])
+            stg.PORT_R = int(server_data[3])
+            self.show_statement('User: ' + stg.USER + ', Host: ' + stg.HOST + ', Port_s: ' + str(stg.PORT_S) + ', Port_r: ' + str(stg.PORT_R) + '\n')
         else:
             self.show_statement('Invalid data. \n')
-            self.show_statement('User: ' + USER + ', Host: ' + HOST + ', Port_s: ' + str(PORT_S) + ', Port_r: ' + PORT_R)
+            self.show_statement('Type to set options: [User] [Host] [Port_to_send] [Port_to_receive]\n')
         self.clear_entry(self)
 
     @staticmethod
@@ -95,6 +110,6 @@ class Chat(Frame):
                 break
         for i in range(1, len(message)):
             if message[len(message)-i] != '\n' or message[len(message)-i] != ' ':
-                return message[:len(message)-i] + '\n'
+                return message[:len(message) - i + 1]
         return ''
 

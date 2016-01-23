@@ -34,11 +34,12 @@ def receive_from_server():
             already_used += 1
             data_table = data_str.split('\n')
             for i in range(len(data_table)):
-                app.load_message(data_table[i], USER)
+                if data_table[i] != '' and data_table[i] != '\n':
+                    app.load_message(data_table[i], USER)
         else:
             data_temp_table = data_str.split('\n')
             for i in range(len(data_table)):
-                if data_table[i] != data_temp_table[i]:
+                if data_table[i] != data_temp_table[i] and data_temp_table[i] != '' and data_temp_table[i] != '\n':
                     app.load_message(data_temp_table[i] + '\n', USER)
             data_table = data_temp_table
         time.sleep(0.5)
