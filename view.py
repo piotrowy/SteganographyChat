@@ -40,9 +40,9 @@ class Chat(tk.Frame):
         self.chat_log.insert(END, "YOU: " + self.chat_entry.get("0.0", END))
         self.chat_log.config(state=DISABLED)
 
-    def load_message(self, message):
+    def load_message(self, message, user):
         self.chat_log.config(state=NORMAL)
-        self.chat_log.insert(END, "YOU: " + message)
+        self.chat_log.insert(END, user + ": " + message)
         self.chat_log.config(state=DISABLED)
 
     def connect_server(self):
