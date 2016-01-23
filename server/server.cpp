@@ -13,9 +13,11 @@
 #include <ctime>
 #include <string>
 #include <iostream>
+#include <pthread.h>
+#include <fcntl.h>
 
 #define SERVER_PORT 1500
-#define BUFFER_SIZE 4096
+#define BUFFER_SIZE 5
 #define QUEUE_SIZE 5
 
 class Message {
@@ -61,6 +63,50 @@ class History {
      }
 };
 
+History *history;
+
+     void *work(void* arg) {
+        int pSocket, pClientSocket;
+        int pBind, pListen;
+        int pFoo = 1;
+        socklen_t pTmp;
+        struct sockaddr_in stAddr_p, stClientAddr_p;
+
+        /* address structure */
+        memset(&stAddr_p, 0, sizeof(struct sockaddr));
+        stAddr_p.sin_family = AF_INET;
+        stAddr_p.sin_addr.s_addr = htonl(INADDR_ANY);
+        stAddr_p.sin_port = htons(SERVER_PORT + 1);
+
+        /* create a socket */
+        pSocket = socket(AF_INET, SOCK_STREAM, 0);
+        setsockopt(pSocket, SOL_SOCKET, SO_REUSEADDR, (char*)&pFoo, sizeof(pFoo));
+
+        /* bind a name to a socket */
+        pBind = bind(pSocket, (struct sockaddr*)&stAddr_p, sizeof(struct sockaddr));
+
+        /* specify queue size */
+        pListen = listen(pSocket, QUEUE_SIZE);
+
+        while(1)
+        {
+            /* block for connection request */
+            pTmp = sizeof(struct sockaddr);
+            pClientSocket = accept(pSocket, (struct sockaddr*)&stClientAddr_p, &pTmp);
+
+            printf("[history request from: %s]\n", inet_ntoa((struct in_addr)stClientAddr_p.sin_addr));
+
+            for (int i = 0; i < 100; i++) {
+                const void* buffer = history->get_message(i).get_lena().append("\n").c_str();
+                write(pClientSocket, buffer, 2*sizeof(buffer));
+            }
+
+            close(pClientSocket);
+        }
+
+        close(pSocket);
+     }
+
 int main() {
 
    int nSocket, nClientSocket;
@@ -68,9 +114,11 @@ int main() {
    int nFoo = 1;
    socklen_t nTmp;
    struct sockaddr_in stAddr, stClientAddr;
+   pthread_t t1;
 
-   History *history = new History();
+   history = new History();
 
+   pthread_create(&t1, NULL, work, (void*) "I am not important");
 
    /* address structure */
    memset(&stAddr, 0, sizeof(struct sockaddr));
@@ -105,7 +153,6 @@ int main() {
                     keep_reading = false;
                 }
            }
-           std::cout<<lena;
            Message* new_lena = new Message(lena);
            history->insert_message(*new_lena);
            close(nClientSocket);
