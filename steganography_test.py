@@ -24,7 +24,7 @@ def decode_secret_message(image):
         for j in range(len(image[i])):
             if index == 8:
                 index = 0
-                message += chr(int(binary_char[::-1], 2))
+                message += chr(int(binary_char, 2))
                 binary_char = ''
             if image[i][j] % 2 == 0:
                 binary_char += '0'
@@ -32,8 +32,15 @@ def decode_secret_message(image):
                 binary_char += '1'
             index += 1
     message = message.split('#@$@#')
-    print(message)
-    return message[0], message[1], message[2] + '\n'
+    return message[0], message[1], message[2]
+
+
+def encode_char_to_binary(char):
+    bin_char = bin(ord(char))
+    bin_char = bin_char[2:]
+    for i in range(8-len(bin_char)):
+        bin_char = '0' + bin_char
+    return bin_char
 
 
 def encode_to_sockets(message, user):
@@ -41,22 +48,13 @@ def encode_to_sockets(message, user):
     data_to_encode = []
     index = 0
     image = rgb2gray(data.lena())
+    binary_message = ''
     for i in range(len(message)):
-        #biore jeden znak z message. Dalej biore jego numer ASCII? i do bin
-        bin_msg = bin(int(message[i].encode()[0]))#chr(int(bin(int('abc'.encode()[1])),2))
-        #tutaj sie gowno pieprzy bo binarne zapisy maja rozna dlugosc
-        for n, value in enumerate(reversed(bin_msg)):
-            if len(bin_msg)-2 <= 8 and value == 'b':#teraz chyba powinna sie zgadzac kazdy string jest zapisany na 8 znakach???
-                for number_of_zeros_to_add in range(0, 8-(len(bin_msg)-2)):
-                    data_to_encode.append(0)
-                    break
-            if value == 'b':
-                break
-            data_to_encode.append(int(value))
+        binary_message += encode_char_to_binary(message[i])
     for i in range(len(image)):
         for j in range(len(image[i])):
-            if index < len(data_to_encode):
-                if data_to_encode[index] % 2 == 0:
+            if index < len(binary_message):
+                if int(binary_message[index]) % 2 == 0:
                     if int(image[i][j]*255.0) % 2 == 1:
                         image[i][j] = int(image[i][j]*255.0) + 1
                     else:
