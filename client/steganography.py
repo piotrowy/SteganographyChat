@@ -15,7 +15,7 @@ def encode_secret_message(img):
     return out_string + '\n'
 
 
-def decode_secret_message(msg):
+def decode_secret_message(image):
     pass
 
 

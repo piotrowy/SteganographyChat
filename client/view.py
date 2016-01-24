@@ -17,13 +17,13 @@ class Chat(Frame):
     @staticmethod
     def set_meta_view(master) -> object:
         master.title("Client")
-        master.geometry('410x390')
+        master.geometry('411x391')
         master.resizable(width=FALSE, height=FALSE)
 
     def create_widgets(self):
-        self.chat_log = Text(self, bd=0, bg='white', height=17, width='43', font='Arial', state=DISABLED)
+        self.chat_log = Text(self, bd=0, bg='white', height=18, width='49', font=("Arial", 11), state=DISABLED)
         self.scrollbar = Scrollbar(self, command=self.chat_log.yview)
-        self.chat_entry = Text(self, bd=0, bg='white', height=3, width='33', font='Arial')
+        self.chat_entry = Text(self, bd=0, bg='white', height=3, width='34', font=("Arial", 12))
         self.button_send = Button(self, text="Send", width=7, command=self.send_to_server)
         self.button_quit = Button(self, text="Set", width=7, fg="red", command=self.set_server)
 

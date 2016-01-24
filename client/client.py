@@ -2,12 +2,11 @@
 # -*- coding: utf-8 -*-
 from view import Chat
 from settings import HOST, PORT_R, USER
-from steganography import *
+import steganography as steg
 import tkinter as tk
 import socket
 import _thread
 import time
-import skimage
 __author__ = 'piotrowy'
 
 root = tk.Tk()
@@ -40,7 +39,7 @@ def receive_from_server():
             data_temp_table = data_str.split('\n')
             for i in range(len(data_table)):
                 if data_table[i] != data_temp_table[i] and data_temp_table[i] != '' and data_temp_table[i] != '\n':
-                    app.load_message(data_temp_table[i] + '\n', USER)
+                    app.load_message(steg.decode_secret_message(steg.decode_from_sockets(data_temp_table[i])) + '\n', USER)
             data_table = data_temp_table
         time.sleep(0.5)
 
