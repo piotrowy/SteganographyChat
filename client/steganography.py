@@ -23,11 +23,14 @@ def encode_to_sockets(message, user):
     message = user + '#' + str(time.clock()) + '#' +  message
     data_to_encode = []
     index = 0
-    image = [[]] #tu trzeba wstawic lenke z biblioteki
+    image = [[]] #tu trzeba wstawic lenke z biblioteki ofc as_grey
     for i in range(len(message)):
-        bin_msg = bin(message[i])
-        for j in range(len(bin_msg)):
-            data_to_encode.append(bin_msg[j])
+        #biore jeden znak z message. Dalej biore jego numer ASCII? i do bin
+        bin_msg = bin(int(message[i].encode()[0]))
+        for n, value in enumerate(reversed(bin_msg)):
+            if value == 'b':
+                break
+            data_to_encode.append(int(value))
     for i in range(len(lena_image)):
         for j in range(len(lena_image[i])):
             if index < len(data_to_encode):
