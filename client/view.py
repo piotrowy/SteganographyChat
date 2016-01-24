@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import steganography as steg
 import settings as stg
 from tkinter import *
 import socket
@@ -88,7 +89,7 @@ class Chat(Frame):
                     print('[send_to_server]: Connection can\'t be established.\n')
                     self.clear_entry()
                     return
-                sck.send(message.encode('utf-8'))
+                sck.send(steg.encode_secret_message(steg.encode_to_sockets(message)).encode('utf-8'))
                 sck.close()
 
     def set_server(self):
