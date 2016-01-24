@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 import steganography as steg
 import settings as stg
-from tkinter import *
 import socket
+from tkinter import *
 __author__ = 'piotrowy'
 
 
@@ -68,10 +68,15 @@ class Chat(Frame):
         self.chat_log.config(state=DISABLED)
         return 0
 
+    def show_help(self):
+        self.show_statement('type to command:\n/clear - to flush chat log.')
+        return 0
+
     def check_command(self, message):
         print('[check_command]: ' + message)
         try:
-            return {'/clear': self.clear_chat_log}[message]()
+            return {'/clear': self.clear_chat_log,
+                    '/help': self.show_help}[message]()
         except KeyError:
             return 1
 

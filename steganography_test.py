@@ -5,6 +5,8 @@ from skimage import data
 from skimage.color import rgb2gray
 __author__ = 'piotrowy'
 
+lena_image = [[]]
+
 
 def encode_secret_message(img):
     out_string = ''
@@ -41,8 +43,8 @@ def encode_to_sockets(message, user):
 
 
 def decode_from_sockets(socket_string):
-    image = rgb2gray(data.lena())
     data_str = []
+    image = rgb2gray(data.lena())
     index = 0
     socket_string = socket_string[:len(socket_string)-1]
     for i in range(len(image)):
@@ -54,3 +56,13 @@ def decode_from_sockets(socket_string):
             else:
                 break
     return data_str
+
+
+def main():
+    print(int(rgb2gray(data.lena())[0][4]*255) % 256)
+    print(encode_to_sockets('Jestem tutaj.\n', 'Piotr')[0])
+    print(decode_from_sockets(encode_secret_message(encode_to_sockets('Jestem tutaj.\n', 'Piotr')) + '\n')[0])
+
+
+if __name__ == '__main__':
+    main()
