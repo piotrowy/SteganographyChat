@@ -18,11 +18,12 @@ def decode_secret_message(image):
     binary_char = ''
     index = 0
     message = ''
-    for i in range(image):
-        for j in range(image[0]):
+    for i in range(len(image)):
+        for j in range(len(image[i])):
             if index == 8:
                 index = 0
-                message += ord(int(binary_char[::-1], 2))
+                message += chr(int(binary_char, 2))
+                binary_char = ''
             if image[i][j] % 2 == 0:
                 binary_char += '0'
             else:
@@ -32,25 +33,33 @@ def decode_secret_message(image):
     return message[0], message[1], message[2]
 
 
+def encode_char_to_binary(char):
+    bin_char = bin(ord(char))
+    bin_char = bin_char[2:]
+    for i in range(8-len(bin_char)):
+        bin_char = '0' + bin_char
+    return bin_char
+
+
+def write_to_pixel(arg, pix):
+    to_map = str(int(arg) % 2) + str(int(pix) % 2)
+    return {'00': int(pix),
+            '01': int(pix) + 1,
+            '10': int(pix) + 1,
+            '11': int(pix)}[to_map]
+
+
 def encode_to_sockets(message, user):
     message = user + '#@$@#' + str(time.clock()) + '#@$@#' + message + '#@$@#'
-    data_to_encode = []
     index = 0
     image = rgb2gray(data.lena())
+    binary_message = ''
     for i in range(len(message)):
-        #biore jeden znak z message. Dalej biore jego numer ASCII? i do bin
-        bin_msg = bin(int(message[i].encode()[0])) #tutaj sie gowno pieprzy bo binarne zapisy maja rozna dlugosc
-        for n, value in enumerate(reversed(bin_msg)):
-            if value == 'b':
-                break
-            data_to_encode.append(int(value))
-        if len(bin_msg)-2 < 8:#teraz chyba powinna sie zgadzac kazdy string jest zapisany na 8 znakach???
-            for number_of_zeros_to_add in range(0, 8-len(bin_msg)-2):
-                data_to_encode.append(int(0))
+        binary_message += encode_char_to_binary(message[i])
     for i in range(len(image)):
         for j in range(len(image[i])):
-            if index < len(data_to_encode):
-                image[i][j] = int(image[i][j]*255.0) + data_to_encode[index]
+            if index < len(binary_message):
+                image[i][j] = write_to_pixel(binary_message[index], image[i][j])
                 index += 1
             else:
                 image[i][j] = int((image[i][j]*255.0) % 255)
@@ -65,9 +74,6 @@ def decode_from_sockets(socket_string):
     for i in range(len(image)):
         data_str.append([])
         for j in range(len(image[i])):
-            if index < len(socket_string) - 1:
-                data_str[i].append(ord(socket_string[index]))
-                index += 1
-            else:
-                break
+            data_str[i].append(ord(socket_string[index]))
+            index += 1
     return data_str

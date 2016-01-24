@@ -43,9 +43,16 @@ def encode_char_to_binary(char):
     return bin_char
 
 
+def write_to_pixel(arg, pix):
+    to_map = str(int(arg) % 2) + str(int(pix) % 2)
+    return {'00': int(pix),
+            '01': int(pix) + 1,
+            '10': int(pix) + 1,
+            '11': int(pix)}[to_map]
+
+
 def encode_to_sockets(message, user):
     message = user + '#@$@#' + str(time.clock()) + '#@$@#' + message + '#@$@#'
-    data_to_encode = []
     index = 0
     image = rgb2gray(data.lena())
     binary_message = ''
@@ -54,20 +61,10 @@ def encode_to_sockets(message, user):
     for i in range(len(image)):
         for j in range(len(image[i])):
             if index < len(binary_message):
-                if int(binary_message[index]) % 2 == 0:
-                    if int(image[i][j]*255.0) % 2 == 1:
-                        image[i][j] = int(image[i][j]*255.0) + 1
-                    else:
-                        image[i][j] = int(image[i][j]*255.0)
-                else:
-                    if int(image[i][j]*255.0) % 2 == 0:
-                        image[i][j] = int(image[i][j]*255.0) + 1
-                    else:
-                        image[i][j] = int(image[i][j]*255.0)
+                image[i][j] = write_to_pixel(binary_message[index], image[i][j])
                 index += 1
             else:
                 image[i][j] = int((image[i][j]*255.0) % 255)
-    print(image[0])
     return image
 
 
@@ -79,16 +76,13 @@ def decode_from_sockets(socket_string):
     for i in range(len(image)):
         data_str.append([])
         for j in range(len(image[i])):
-            #if index < len(socket_string) - 1:
             data_str[i].append(ord(socket_string[index]))
             index += 1
-            #else:
-                #break
     return data_str
 
 
 def main():
-    print(decode_secret_message(decode_from_sockets(encode_secret_message(encode_to_sockets('Jestem tutaj.\n', 'Piotr')) + '\n')))
+    print(decode_secret_message(decode_from_sockets(encode_secret_message(encode_to_sockets('Nie jestem tutaj.\n', 'Piotr')) + '\n')))
 
 
 if __name__ == '__main__':
