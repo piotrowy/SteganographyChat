@@ -3,6 +3,7 @@
 import steganography as steg
 import settings as stg
 import socket
+import time
 from tkinter import *
 __author__ = 'piotrowy'
 
@@ -40,10 +41,13 @@ class Chat(Frame):
         self.show_statement('Type to set options [User] [Host] [Port_to_send] [Port_to_receive] and press \'set\'.\n')
 
     def show_statement(self, txt):
-        self.load_message(txt, stg.ROOT)
+        self.load_message((stg.ROOT, time.clock(), txt))
         self.clear_entry()
 
-    def load_message(self, message, user):
+    def load_message(self, data):
+        message = data[2]
+        user = data[0]
+        timestamp = data[1]
         if message != '' and message != '\n':
             self.chat_log.config(state=NORMAL)
             start = float(self.chat_log.index('end'))-1.0

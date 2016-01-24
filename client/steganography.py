@@ -15,7 +15,28 @@ def encode_secret_message(img):
 
 
 def decode_secret_message(image):
-    pass
+    binary_char = ''
+    index = 0
+    message = ''
+    for i in range(image):
+        for j in range(image[0]):
+            if index == 8:
+                index = 0
+                message += ord(int(binary_char[::-1], 2))
+            if image[i][j] % 2 == 0:
+                binary_char += '0'
+            else:
+                binary_char += '1'
+            index += 1
+    index = 0
+    for n, char in enumerate(message):
+        if char == '#':
+            index += 1
+        if index == 3:
+            message = message[:n]
+            break
+    message = message.split('#')
+    return message[0], message[1], message[2]
 
 
 def encode_to_sockets(message, user):

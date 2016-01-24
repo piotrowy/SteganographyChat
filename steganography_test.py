@@ -17,11 +17,32 @@ def encode_secret_message(img):
 
 
 def decode_secret_message(image):
-    pass
+    binary_char = ''
+    index = 0
+    message = ''
+    for i in range(image):
+        for j in range(image[0]):
+            if index == 8:
+                index = 0
+                message += ord(int(binary_char[::-1], 2))
+            if image[i][j] % 2 == 0:
+                binary_char += '0'
+            else:
+                binary_char += '1'
+            index += 1
+    index = 0
+    for n, char in enumerate(message):
+        if char == '#':
+            index += 1
+        if index == 3:
+            message = message[:n]
+            break
+    message = message.split('#')
+    return message[0], message[1], message[2]
 
 
 def encode_to_sockets(message, user):
-    message = user + '#' + str(time.clock()) + '#' + message
+    message = user + '#' + str(time.clock()) + '#' + message + '#'
     data_to_encode = []
     index = 0
     image = rgb2gray(data.lena())
@@ -33,7 +54,7 @@ def encode_to_sockets(message, user):
                 break
             data_to_encode.append(int(value))
         if len(bin_msg)-2 < 8:#teraz chyba powinna sie zgadzac kazdy string jest zapisany na 8 znakach???
-            for number_of_zeros_to_add in range(0, 8-len(bin_msg-2)):
+            for number_of_zeros_to_add in range(0, 8-len(bin_msg)-2):
                 data_to_encode.append(int(0))
     for i in range(len(image)):
         for j in range(len(image[i])):
