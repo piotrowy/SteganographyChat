@@ -28,19 +28,12 @@ def decode_secret_message(image):
             else:
                 binary_char += '1'
             index += 1
-    index = 0
-    for n, char in enumerate(message):
-        if char == '#':
-            index += 1
-        if index == 3:
-            message = message[:n]
-            break
-    message = message.split('#')
+    message = message.split('#@$@#')
     return message[0], message[1], message[2]
 
 
 def encode_to_sockets(message, user):
-    message = user + '#' + str(time.clock()) + '#' + message
+    message = user + '#@$@#' + str(time.clock()) + '#@$@#' + message + '#@$@#'
     data_to_encode = []
     index = 0
     image = rgb2gray(data.lena())
