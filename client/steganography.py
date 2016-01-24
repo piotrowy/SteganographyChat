@@ -45,7 +45,7 @@ def encode_to_sockets(message, user):
                 break
             data_to_encode.append(int(value))
         if len(bin_msg)-2 < 8:#teraz chyba powinna sie zgadzac kazdy string jest zapisany na 8 znakach???
-            for number_of_zeros_to_add in range(0, 8-len(bin_msg-2)):
+            for number_of_zeros_to_add in range(0, 8-len(bin_msg)-2):
                 data_to_encode.append(int(0))
     for i in range(len(image)):
         for j in range(len(image[i])):
