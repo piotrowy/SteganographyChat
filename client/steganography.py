@@ -20,7 +20,7 @@ def decode_secret_message(image):
 
 
 def encode_to_sockets(message, user):
-    message = user + '#' + str(time.clock()) + '#' +  message
+    message = user + '#' + str(time.clock()) + '#' + message
     data_to_encode = []
     index = 0
     image = [[]] #tu trzeba wstawic lenke z biblioteki ofc as_grey
@@ -36,7 +36,8 @@ def encode_to_sockets(message, user):
             if index < len(data_to_encode):
                 image[i][j] += data_to_encode[index]
                 index += 1
-            break
+            else:
+                break
     return image
 
 
@@ -46,6 +47,9 @@ def decode_from_sockets(socket_string):
     socket_string = socket_string[:len(socket_string)-1]
     for i in range(len(lena_image)):
         for j in range(len(lena_image[i])):
-            data[i][j] = int(socket_string[index])
-            index += 1
+            if index < len(socket_string):
+                data[i][j] = int(socket_string[index])
+                index += 1
+            else:
+                break
     return data
