@@ -81,11 +81,11 @@ def decode_from_sockets(socket_string):
     for i in range(len(image)):
         data_str.append([])
         for j in range(len(image[i])):
-            if index < len(socket_string) - 1:
-                data_str[i].append(ord(socket_string[index]))
-                index += 1
-            else:
-                break
+            #if index < len(socket_string) - 1:
+            data_str[i].append(ord(socket_string[index]))
+            index += 1
+            #else:
+                #break
     return data_str
 
 
