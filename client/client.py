@@ -22,25 +22,31 @@ def receive_from_server():
             sck.connect((HOST, PORT_R))
         except socket.error:
             print('[SOCKETS.PY][receive_from_server]: Connection can\'t be established')
-        data_str = ''
-        data = sck.recv(256)
-        while data.decode("ISO-8859-1") != '':
-            data_str += data.decode("ISO-8859-1")
+        try:
+            data_str = ''
             data = sck.recv(256)
-        sck.close()
+            while data.decode("ISO-8859-1") != '':
+                data_str += data.decode("ISO-8859-1")
+                data = sck.recv(256)
+            sck.close()
 
-        if already_used == 0:
-            already_used += 1
-            data_table = data_str.split('\n')
-            for i in range(len(data_table)):
-                if data_table[i] != '' and data_table[i] != '\n':
-                    app.load_message(steg.decode_secret_message(steg.decode_from_sockets(data_table[i])))
-        else:
-            data_temp_table = data_str.split('\n')
-            for i in range(len(data_table)):
-                if data_table[i] != data_temp_table[i] and data_temp_table[i] != '' and data_temp_table[i] != '\n':
-                    app.load_message(steg.decode_secret_message(steg.decode_from_sockets(data_temp_table[i])))
-            data_table = data_temp_table
+            if already_used == 0:
+                # data_table = []
+                # for i in range(0, 100):
+                    # data_table.append('')
+                already_used += 1
+                data_table = data_str.split('\n')
+                for i in range(len(data_table)-1):
+                     if data_table[i] != '' and data_table[i] != '\n':
+                         app.load_message(steg.decode_secret_message(steg.decode_from_sockets(data_table[i])))
+            else:
+                data_temp_table = data_str.split('\n')
+                for i in range(len(data_table)-1):
+                    if data_table[i] != data_temp_table[i] and data_temp_table[i] != '' and data_temp_table[i] != '\n':
+                        app.load_message(steg.decode_secret_message(steg.decode_from_sockets(data_temp_table[i])))
+                data_table = data_temp_table
+        except socket.error:
+            print('[SOCKETS.PY][receive_from_server]: Connection can\'t be established')
         time.sleep(0.5)
 
 
