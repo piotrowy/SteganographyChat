@@ -9,7 +9,7 @@ PORT_R = 5001
 
 def main():
     for i in range(0, 150):
-        message = 'test__________________________________________________________' + str(i)
+        message = 'test' + '-'*50 + str(i)
         print('[send_to_server] message: ' + message)
         sck = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         try:

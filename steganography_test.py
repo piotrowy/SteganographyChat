@@ -13,7 +13,7 @@ def encode_secret_message(img):
     for i in range(len(img)):
         for j in range(len(img[i])):
             out_string += chr(int(img[i][j]))
-    return out_string
+    return out_string + '\n'
 
 
 def decode_secret_message(image):
@@ -76,13 +76,16 @@ def decode_from_sockets(socket_string):
     for i in range(len(image)):
         data_str.append([])
         for j in range(len(image[i])):
-            data_str[i].append(ord(socket_string[index]))
-            index += 1
+            if index < len(socket_string)-1:
+                data_str[i].append(ord(socket_string[index]))
+                index += 1
+            else:
+                data_str[i].append(image[i][j])
     return data_str
 
 
 def main():
-    print(decode_secret_message(decode_from_sockets(encode_secret_message(encode_to_sockets('Nie jestem tutaj.\n', 'Piotr')) + '\n')))
+    print(decode_secret_message(decode_from_sockets(encode_secret_message(encode_to_sockets('Nie jestem tutaj.\n', 'Piotr')))))
 
 
 if __name__ == '__main__':

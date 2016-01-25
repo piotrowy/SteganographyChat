@@ -117,6 +117,10 @@ int main() {
    pthread_t t1;
 
    history = new History();
+   for (int i = 0; i < 100; i++) {
+           Message* new_lena = new Message("");
+           history->insert_message(*new_lena);
+   }
 
    pthread_create(&t1, NULL, work, (void*) "I am not important");
 
