@@ -48,7 +48,9 @@ class Chat(Frame):
         message = data[2]
         user = data[0]
         timestamp = data[1]
+        print(message)
         if message != '' and message != '\n':
+            print(message)
             self.chat_log.config(state=NORMAL)
             start = float(self.chat_log.index('end'))-1.0
             self.chat_log.insert(END, user + ': ')
@@ -98,7 +100,7 @@ class Chat(Frame):
                     print('[send_to_server]: Connection can\'t be established.\n')
                     self.clear_entry()
                     return
-                sck.send(steg.encode_secret_message(steg.encode_to_sockets(message)).encode('utf-8'))
+                sck.send(steg.encode_secret_message(steg.encode_to_sockets(message, stg.USER)).encode("ISO-8859-1"))
                 sck.close()
 
     def set_server(self):

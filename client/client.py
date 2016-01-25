@@ -24,8 +24,8 @@ def receive_from_server():
             print('[SOCKETS.PY][receive_from_server]: Connection can\'t be established')
         data_str = ''
         data = sck.recv(256)
-        while data.decode('utf-8') != '':
-            data_str += data.decode('utf-8')
+        while data.decode("ISO-8859-1") != '':
+            data_str += data.decode("ISO-8859-1")
             data = sck.recv(256)
         sck.close()
 
@@ -34,12 +34,13 @@ def receive_from_server():
             data_table = data_str.split('\n')
             for i in range(len(data_table)):
                 if data_table[i] != '' and data_table[i] != '\n':
-                    app.load_message(data_table[i], USER)
+                    app.load_message(steg.decode_secret_message(steg.decode_from_sockets(data_table[i])))
         else:
             data_temp_table = data_str.split('\n')
             for i in range(len(data_table)):
-                if data_table[i] != data_temp_table[i] and data_temp_table[i] != '' and data_temp_table[i] != '\n':
-                    app.load_message(steg.decode_secret_message(steg.decode_from_sockets(data_temp_table[i])) + '\n')
+                for j in range(len(data_temp_table)):
+                    if data_table[i] != data_temp_table[j] and data_temp_table[j] != '' and data_temp_table[j] != '\n':
+                        app.load_message(steg.decode_secret_message(steg.decode_from_sockets(data_temp_table[i])))
             data_table = data_temp_table
         time.sleep(0.5)
 

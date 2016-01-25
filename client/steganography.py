@@ -11,7 +11,7 @@ def encode_secret_message(img):
     for i in range(len(img)):
         for j in range(len(img[i])):
             out_string += chr(int(img[i][j]))
-    return out_string
+    return out_string + '\n'
 
 
 def decode_secret_message(image):
