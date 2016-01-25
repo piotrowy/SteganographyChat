@@ -38,9 +38,8 @@ def receive_from_server():
         else:
             data_temp_table = data_str.split('\n')
             for i in range(len(data_table)):
-                for j in range(len(data_temp_table)):
-                    if data_table[i] != data_temp_table[j] and data_temp_table[j] != '' and data_temp_table[j] != '\n':
-                        app.load_message(steg.decode_secret_message(steg.decode_from_sockets(data_temp_table[i])))
+                if data_table[i] != data_temp_table[i] and data_temp_table[i] != '' and data_temp_table[i] != '\n':
+                    app.load_message(steg.decode_secret_message(steg.decode_from_sockets(data_temp_table[i])))
             data_table = data_temp_table
         time.sleep(0.5)
 

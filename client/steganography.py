@@ -29,7 +29,10 @@ def decode_secret_message(image):
             else:
                 binary_char += '1'
             index += 1
-    message = message.split('#@$@#')
+    if len(message.split('#@$@#')) > 3:
+        message = message.split('#@$@#')
+    else:
+        message = ['', '', '']
     return message[0], message[1], message[2]
 
 
@@ -74,6 +77,9 @@ def decode_from_sockets(socket_string):
     for i in range(len(image)):
         data_str.append([])
         for j in range(len(image[i])):
-            data_str[i].append(ord(socket_string[index]))
-            index += 1
+            if index < len(socket_string)-1:
+                data_str[i].append(ord(socket_string[index]))
+                index += 1
+            else:
+                data_str[i].append(image[i][j])
     return data_str
