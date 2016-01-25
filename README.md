@@ -17,6 +17,10 @@ Moduły:
       server.cpp - zajmuje się łącznością między klientami, przechowuje historię wiadomości
 
 
+Uruchamianie:
+server.cpp: g++ --std=c++11 -Wall -O0 -g -pthread -o server server.cpp
+client: python3 client.py
+
 Autorzy:
 Piotr Ceranek
 Michał Chatłas
