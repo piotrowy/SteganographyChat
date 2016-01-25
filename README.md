@@ -24,4 +24,3 @@ client: python3 client.py
 Autorzy:
 Piotr Ceranek
 Michał Chatłas
-Justyna Szymanowska
